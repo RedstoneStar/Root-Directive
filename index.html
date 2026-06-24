@@ -1,16 +1,33 @@
 <!DOCTYPE html>
 <html>
   
-  <body style="background-color: #c9ffcf"; font-family: Arial, sans-serif, Helvetica, Noto Sans>
+  <body style="background-image: url(./Wallpaper2.jpg); background-size: cover; background-repeat: no-repeat; background-position: center; background-attachment: fixed; font-family: Arial, sans-serif, Helvetica, Noto Sans">
     
-    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border: solid; width: 100%; margin: auto; padding: 10px; text-align: center; background-color: #ffffff; border-radius: 5px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);">
-    
-    <img style="border-radius: 50%; object-fit: cover; width: 100px;" src="./CodeSymbol.png" />
 
-    <h1 style="padding: 4px; margin: 4px;">Welcome to Root Directive</h1>
 
-    <p>Root Directive is a interactive puzzle game where you (the user) must use the tools available from the OS to solve the puzzles and find the code to the vault.</p>
+    <div style="display: flex; justify-content: space-between; align-items: center; position: absolute; width: 100%; display: flex; background-color: rgba(26, 61, 92, 0.2); color: #a34514">
+
+      <p style="margin-left: 15px; font-weight: 800; background-color: rgba(7, 50, 87, 0.911); padding: 5px 10px; border-radius: 5px;">Root Directive</p>
+
+      <p id="timeElement" style="margin-right: 15px; font-weight: 800; background-color: rgba(7, 50, 87, 0.911); padding: 5px 10px; border-radius: 5px;">6/24/26 4:46 PM</p>
+
     </div>
+
+
+
+    <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); border: solid; width: 85%; margin: auto; padding: 10px; text-align: center; background-color: #ffffff; border-radius: 5px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);">
+    
+      <img style="border-radius: 50%; object-fit: cover; width: 100px;" src="./CodeSymbol.png" />
+
+      <h1 style="padding: 4px; margin: 4px;">Welcome to Root Directive</h1>
+
+      <p>Root Directive is a interactive puzzle game where you (the user) must use the tools available from the OS to solve the puzzles and find the code to the vault.</p>
+    </div>
+
+    <script>
+      setInterval(function () {
+        document.querySelector("#timeElement").innerHTML = new Date().toLocaleString();}, 1000);
+    </script>
 
   </body>
 
