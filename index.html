@@ -3,11 +3,7 @@
   <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>
-      
-      Root Directive
-    
-    </title>
+    <title>Root Directive</title>
     <link rel="stylesheet" type="text/css" href="style.css" />
   </head>
   
@@ -15,94 +11,117 @@
     <!-- Top OS Bar -->
     <header id="topBar" class="topBar">
       <div class="topBarLeft">
-        <span class="osName">
-          
-          Root Directive
-        
-        </span>
+        <span class="osName">Root Directive</span>
       </div>
       <div class="topBarRight">
-        <button id="openWelcomeWindow" class="welcomeButton">
-          
-          Welcome
-        
-        </button>
-        <span id="timeElement" class="timeElement">
-          
-          Loading Time...
-        
-        </span>
+        <button id="openWelcomeWindow" class="welcomeButton">Welcome</button>
+        <span id="timeElement" class="timeElement">Loading Time...</span>
       </div>
     </header>
 
-    <!-- Welcome Window -->
-    <div id="welcomeWindow" class="modalWindow">
-      
-      <!-- Welcome Header -->
-      <div id="welcomeWindowHeader" class="modalHeader">
-        <span class="modalTitle">
-          
-          Welcome
-        
-        </span>
-        <button id="closeWelcomeWindow" class="closeButton">&times;</button>
-      </div>
-      
-      <!-- Welcome Content -->
-      <div class="modalContent">
-        <img class="modalImage" src="./CodeSymbol.png" alt="Code Symbol" />
-        <h1>
-          
-          Welcome to Root Directive
-        
-        </h1>
-        <p>
-          
-          Root Directive is a interactive puzzle game where you (the user) must use the tools available from the OS to solve the puzzles and find the code to the vault.
-        
-        </p>
-      </div>
-
-    </div>
-
-    <!-- App Icons  -->
+    <!-- App Icons -->
     <div id="desktopIcons" style="padding-top: 64px">
+      <!-- Vault Icon -->
+      <div id="openVaultAppWindow" class="modalAppIcon" style="position: absolute; top: 64px; left: 16px; width: max-content; text-align: center;">
+        <div style="width: 128px; height: 128px; border-radius: 15%; overflow: hidden; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);">
+          <img src="./vaultAppIcon.png" style="width: 100%; height: 100%; transform: scale(1.3); object-fit: cover;" />
+        </div>
+        <p class="iconText">Vault</p>
+      </div>
   
-      <div id="openChadwickAppWindow" class="modalAppIcon" style="position: absolute; top: 64px; left: 16px; width: max-content; text-align: center;">
-
-        <div style="width: 128px; height: 128px; border-radius: 50%; overflow: hidden; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);">
-          <img src="./ChadwickAppIcon.webp" style="width: 100%; height: 100%; transform: scale(1.19); object-fit: cover;" />
+      <!-- Chadwick Icon -->
+      <div id="openChadwickAppWindow" class="modalAppIcon" style="position: absolute; top: 64px; left: 160px; width: max-content; text-align: center;">
+        <div style="width: 128px; height: 128px; border-radius: 10%; overflow: hidden; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);">
+          <img src="./ChadwickAppIcon.png" style="width: 100%; height: 100%; transform: scale(1.5); object-fit: cover;" />
         </div>
-
-        <p style="margin-top: 8px; color: #ffffff; font-size: 14px; font-weight: 500; text-shadow: 1px 1px 3px rgba(0,0,0,0.8);">
-          Chadwick
-        </p>
-
+        <p class="iconText">Chadwick</p>
       </div>
     </div>
 
-    <!-- Application Windows -->
-    <div id="chadwickAppWindow" class="modalWindow" style="display: none; width: 400px;">
-      <div id="chadwickAppWindowHeader" class="modalHeader">
-        <span class="modalTitle">Chadwick AI Console</span>
-        <button id="closeChadwickAppWindow" class="closeButton">&times;</button>
-      </div>
-      <!-- Specialty Chat Container Layout Override -->
-      <div class="modalContent" style="padding: 0; height: 380px; display: flex; flex-direction: column; justify-content: space-between; align-items: stretch; text-align: left;">
-        
-        <!-- Live Chat Message Area -->
-        <div id="chadwickChatLog" class="chatLog">
-          <div class="msg bubble-bot">System online. Greetings, operator. I am CHADWICK. How may I assist you with the Root Directive configuration framework?</div>
-        </div>
-        
-        <!-- Input Assembly Bar -->
-        <div class="chatInputContainer">
-          <input type="text" id="chadwickInput" placeholder="Type a message or inquiry..." autocomplete="off" />
-          <button id="chadwickSendBtn">Send</button>
-        </div>
+    <!-- WINDOWS container -->
+    <div id="windowManager">
 
+      <!-- Welcome Window -->
+      <div id="welcomeWindow" class="modalWindow">
+        <div id="welcomeWindowHeader" class="modalHeader">
+          <span class="modalTitle">Welcome</span>
+          <button id="closeWelcomeWindow" class="closeButton">&times;</button>
+        </div>
+        <div class="modalContent">
+          <!-- Note the ID and draggable="true" added here -->
+          <img id="welcomeDragImage" class="modalImage" src="./CodeSymbol.png" alt="Code Symbol" draggable="true" title="Drag me to your desktop!" />
+          <h1>Welcome to Root Directive</h1>
+          <p>Root Directive is an interactive puzzle game where you (the operator) must use the tools available from the OS to solve the puzzles and find the override code to the vault.</p>
+        </div>
       </div>
+
+      <!-- Chadwick Chat Window -->
+      <div id="chadwickAppWindow" class="modalWindow" style="display: none; width: 420px;">
+        <div id="chadwickAppWindowHeader" class="modalHeader">
+          <span class="modalTitle">Chadwick AI Console</span>
+          <button id="closeChadwickAppWindow" class="closeButton">&times;</button>
+        </div>
+        <div class="modalContent chadwickContent">
+          <div id="chadwickChatLog" class="chatLog">
+            <div class="msg bubble-bot">System online. Greetings, operator. I am CHADWICK. How may I assist you with the Root Directive configuration framework?</div>
+          </div>
+          <div class="chatInputContainer">
+            <input type="text" id="chadwickInput" placeholder="Type a command..." autocomplete="off" />
+            <button id="chadwickSendBtn">Send</button>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Vault Application Window -->
+      <div id="vaultAppWindow" class="modalWindow" style="display: none; width: 450px;">
+        <div id="vaultAppWindowHeader" class="modalHeader">
+          <span class="modalTitle">Central Vault Terminal</span>
+          <button id="closeVaultAppWindow" class="closeButton">&times;</button>
+        </div>
+        <div class="modalContent vaultContent">
+          <h2>Authorization Required</h2>
+          <p>Enter the 6-digit cryptographic override code.</p>
+          
+          <div class="vault-input-group">
+            <input type="text" class="vault-digit" maxlength="1" />
+            <input type="text" class="vault-digit" maxlength="1" />
+            <input type="text" class="vault-digit" maxlength="1" />
+            <input type="text" class="vault-digit" maxlength="1" />
+            <input type="text" class="vault-digit" maxlength="1" />
+            <input type="text" class="vault-digit" maxlength="1" />
+          </div>
+
+          <div id="vaultStatusMessage">AWAITING INPUT...</div>
+        </div>
+      </div>
+
+      <!--  Image Editor Window -->
+      <div id="imageEditorWindow" class="modalWindow" style="display: none; width: 500px;">
+        <div id="imageEditorWindowHeader" class="modalHeader">
+          <span class="modalTitle">Photo Diagnostics Tool</span>
+          <button id="closeImageEditorWindow" class="closeButton">&times;</button>
+        </div>
+        <div class="modalContent editorContent">
+          <div class="slider-controls">
+            <div class="slider-row">
+              <label>Brightness</label>
+              <input type="range" id="brightnessSlider" min="0" max="100" value="100">
+            </div>
+            <div class="slider-row">
+              <label>Contrast</label>
+              <input type="range" id="contrastSlider" min="0" max="100" value="100">
+            </div>
+          </div>
+          
+          <div class="canvas-container">
+            <img id="editorCanvasImage" src="./CodeSymbol.png" />
+            <div id="hiddenClueText">Password: 000000</div>
+          </div>
+        </div>
+      </div>
+
     </div>
+    
     <!-- Scripts -->
     <script type="module" src="script.js"></script>
   </body>

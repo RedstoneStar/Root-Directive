@@ -13,7 +13,8 @@ body {
   background-attachment: fixed;
   font-family: Arial, sans-serif, Helvetica, "Noto Sans";
   height: 100vh;
-  overflow: hidden; /* Prevents scrolling to maintain the "Desktop" feel */
+  overflow: hidden; 
+  background-color: #0d1117; /* Fallback */
 }
 
 /* --- Top Bar (Glass Effect) --- */
@@ -24,20 +25,23 @@ body {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  background-color: rgba(26, 61, 92, 0.4);
-  backdrop-filter: blur(10px);
-  -webkit-backdrop-filter: blur(10px); /* For Safari support */
+  background: rgba(10, 15, 25, 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
   padding: 10px 15px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+  box-shadow: 0 2px 20px rgba(0, 0, 0, 0.5);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  z-index: 9999;
 }
 
 .osName, .timeElement, .welcomeButton {
-  background-color: rgba(7, 50, 87, 0.911);
-  color: #ffffff;
+  background: linear-gradient(135deg, #1f2937, #111827);
+  color: #e5e7eb;
   font-weight: 600;
   padding: 6px 12px;
-  border-radius: 5px;
+  border-radius: 6px;
   font-size: 14px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .topBarRight {
@@ -47,40 +51,74 @@ body {
 
 .welcomeButton {
   cursor: pointer;
-  border: 1px solid transparent;
-  color: #ffaa00;
+  color: #00ffaa;
   transition: all 0.2s ease;
+  box-shadow: 0 0 10px rgba(0, 255, 170, 0.1);
 }
 
 .welcomeButton:hover {
-  background-color: #073257;
-  border-color: #ffaa00;
+  background: linear-gradient(135deg, #111827, #000);
+  border-color: #00ffaa;
+  box-shadow: 0 0 15px rgba(0, 255, 170, 0.3);
 }
 
-/* --- Draggable Modal Window --- */
+/* --- Desktop Icons --- */
+.modalAppIcon {
+  cursor: pointer;
+  border-radius: 8px;
+  transition: all 0.2s ease;
+  padding: 8px;
+}
+.modalAppIcon.selected {
+  background-color: rgba(255, 255, 255, 0.15);
+  outline: 1px solid rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(5px);
+}
+.iconText {
+  margin-top: 8px; 
+  color: #ffffff; 
+  font-size: 14px; 
+  font-weight: 500; 
+  text-shadow: 0px 2px 4px rgba(0,0,0,0.9);
+}
+
+/* --- Draggable Modal Window (The Sleek Redesign) --- */
 .modalWindow {
   position: absolute;
   top: calc(50% - 175px); 
   left: calc(50% - 250px);
   width: 90%;
   max-width: 500px;
-  background-color: #ffffff;
-  border-radius: 8px;
-  box-shadow: 0px 10px 30px rgba(0, 0, 0, 0.5);
-  border: 1px solid #13181C;
+  background: rgba(15, 20, 30, 0.75); /* Dark Glass */
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border-radius: 12px;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.7), inset 0 0 0 1px rgba(255, 170, 0, 0.2);
+  border: 1px solid rgba(255, 255, 255, 0.1);
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  color: #fff;
+}
+
+/* Sleek top glowing border accent */
+.modalWindow::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; height: 1px;
+  background: linear-gradient(90deg, transparent, #ffaa00, #dd500e, transparent);
+  z-index: 10;
 }
 
 /* --- Modal Header --- */
 .modalHeader {
-  background-color: #073257;
+  background: linear-gradient(90deg, rgba(7, 25, 45, 0.8), rgba(20, 10, 5, 0.8));
   padding: 12px 15px;
   cursor: grab;
   display: flex;
   align-items: center;
   justify-content: space-between;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
 }
 
 .modalHeader:active {
@@ -88,9 +126,12 @@ body {
 }
 
 .modalTitle {
-  color: #c67f3a;
+  background: -webkit-linear-gradient(#ffaa00, #ff5e00);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
   font-size: 15px;
-  font-weight: 600;
+  font-weight: 700;
+  letter-spacing: 0.5px;
   user-select: none;
 }
 
@@ -98,21 +139,19 @@ body {
   cursor: pointer;
   background: none;
   border: none;
-  padding: 0px;
-  margin: 0px;
   font-size: 22px;
   line-height: 1;
   font-weight: 600;
-  color: #dd500e;
-  transition: transform 0.2s, color 0.2s;
+  color: #888;
+  transition: all 0.2s;
 }
 
 .closeButton:hover {
   color: #ff3c00;
-  transform: scale(1.15);
+  transform: scale(1.15) rotate(90deg);
 }
 
-/* --- Modal Content --- */
+/* --- Modal Content General --- */
 .modalContent {
   padding: 30px 20px;
   display: flex;
@@ -121,100 +160,217 @@ body {
   text-align: center;
 }
 
-.modalImage {
+#welcomeDragImage {
+  cursor: grab;
   border-radius: 50%;
   object-fit: cover;
   width: 100px;
   height: 100px;
   margin-bottom: 20px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+  box-shadow: 0 0 20px rgba(255, 170, 0, 0.4);
+  transition: transform 0.2s;
+}
+#welcomeDragImage:hover {
+  transform: scale(1.05);
 }
 
 .modalContent h1 {
-  font-size: 24px;
+  font-size: 22px;
   margin-bottom: 12px;
-  color: #073257;
+  color: #e2e8f0;
 }
 
 .modalContent p {
-  font-size: 15px;
+  font-size: 14px;
   line-height: 1.6;
-  color: #333333;
-}
-.modalAppIcon {
-  cursor: pointer;
-  border-radius: 6px;
-  transition: background-color 0.15s ease;
-  padding: 8px 8px 0px 8px;
+  color: #9ca3af;
 }
 
-.modalAppIcon.selected {
-  background-color: rgba(255, 255, 255, 0.25); /* Light gray/white semi-transparent overlay */
-  outline: 1px solid rgba(255, 255, 255, 0.4); /* Optional: subtle border like Windows selection */
+/* --- Vault UI --- */
+.vaultContent {
+  background: radial-gradient(circle at center, rgba(20,25,35,0.9) 0%, rgba(10,15,20,0.9) 100%);
 }
-/* --- Chadwick Chat Client UI --- */
+.vaultContent h2 {
+  color: #ffaa00;
+  margin-bottom: 5px;
+}
+.vault-input-group {
+  display: flex;
+  gap: 12px;
+  margin: 30px 0;
+}
+.vault-digit {
+  width: 45px;
+  height: 55px;
+  background: rgba(0, 0, 0, 0.6);
+  border: 1px solid rgba(255, 170, 0, 0.4);
+  border-radius: 8px;
+  color: #00ffaa;
+  font-size: 28px;
+  font-weight: bold;
+  text-align: center;
+  box-shadow: inset 0 2px 5px rgba(0,0,0,0.8);
+  transition: all 0.2s ease;
+  outline: none;
+}
+.vault-digit:focus {
+  border-color: #00ffaa;
+  box-shadow: 0 0 10px rgba(0, 255, 170, 0.4), inset 0 2px 5px rgba(0,0,0,0.8);
+}
+#vaultStatusMessage {
+  font-weight: bold;
+  letter-spacing: 1px;
+  color: #ffaa00;
+  margin-top: 10px;
+}
+
+/* --- Chadwick Chat UI --- */
+.chadwickContent {
+  padding: 0;
+  height: 380px;
+  justify-content: space-between;
+  align-items: stretch;
+  text-align: left;
+}
 .chatLog {
   flex: 1;
-  width: 100%;
   padding: 15px;
-  background-color: #f4f6f8;
+  background: rgba(5, 10, 15, 0.4);
   overflow-y: auto;
   display: flex;
   flex-direction: column;
   gap: 12px;
 }
-
 .msg {
   max-width: 82%;
   padding: 10px 14px;
-  border-radius: 16px;
+  border-radius: 12px;
   font-size: 14px;
   line-height: 1.42;
   word-wrap: break-word;
-  box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
 }
-
 .bubble-bot {
-  background-color: #e2e8f0;
-  color: #073257;
+  background: rgba(7, 50, 87, 0.6);
+  border: 1px solid rgba(0, 255, 170, 0.2);
+  color: #00ffaa;
   align-self: flex-start;
   border-bottom-left-radius: 3px;
 }
-
 .bubble-user {
-  background-color: #073257;
-  color: #ffffff;
+  background: rgba(221, 80, 14, 0.6);
+  border: 1px solid rgba(255, 170, 0, 0.2);
+  color: #fff;
   align-self: flex-end;
   border-bottom-right-radius: 3px;
 }
-
 .chatInputContainer {
   display: flex;
-  border-top: 1px solid #13181C;
-  width: 100%;
-  background: #ffffff;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(10, 15, 25, 0.8);
 }
-
 #chadwickInput {
   flex: 1;
   border: none;
+  background: transparent;
   padding: 14px 15px;
   font-size: 14px;
+  color: #fff;
   outline: none;
-  color: #333333;
 }
-
 #chadwickSendBtn {
-  background-color: #073257;
-  color: #ffaa00;
+  background: rgba(7, 50, 87, 0.8);
+  color: #00ffaa;
   border: none;
+  border-left: 1px solid rgba(255, 255, 255, 0.1);
   padding: 0 22px;
   cursor: pointer;
   font-weight: 600;
-  font-size: 14px;
-  transition: background-color 0.15s ease;
+  transition: background 0.15s ease;
+}
+#chadwickSendBtn:hover {
+  background: rgba(7, 50, 87, 1);
 }
 
-#chadwickSendBtn:hover {
-  background-color: #0c4475;
+/* --- Image Editor UI --- */
+.editorContent {
+  gap: 20px;
+}
+.slider-controls {
+  width: 100%;
+  background: rgba(0,0,0,0.4);
+  padding: 15px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.1);
+}
+.slider-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+.slider-row:last-child {
+  margin-bottom: 0;
+}
+.slider-row label {
+  color: #ffaa00;
+  font-size: 14px;
+  font-weight: bold;
+  width: 80px;
+  text-align: left;
+}
+.slider-row input[type=range] {
+  flex: 1;
+  margin-left: 10px;
+  accent-color: #00ffaa;
+}
+.canvas-container {
+  position: relative;
+  width: 250px;
+  height: 250px;
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 8px;
+  background: #000;
+  overflow: hidden;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+}
+#editorCanvasImage {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: filter 0.1s;
+}
+#hiddenClueText {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  color: #ff3c00;
+  font-size: 28px;
+  font-weight: 900;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  text-shadow: 0 0 10px rgba(255, 0, 0, 0.8), 2px 2px 0px #000;
+  opacity: 0; /* Hidden initially */
+  pointer-events: none; /* Let clicks pass through to image if needed */
+  transition: opacity 0.1s;
+}
+
+/* --- Downloading Animation --- */
+.downloading-sign {
+  position: absolute;
+  color: #00ffaa;
+  font-weight: bold;
+  font-size: 14px;
+  background: rgba(0,0,0,0.7);
+  padding: 5px 10px;
+  border-radius: 4px;
+  border: 1px solid #00ffaa;
+  animation: pulse 1s infinite alternate;
+  pointer-events: none;
+  z-index: 9000;
+}
+@keyframes pulse {
+  0% { transform: scale(1); opacity: 0.8; }
+  100% { transform: scale(1.05); opacity: 1; box-shadow: 0 0 10px #00ffaa; }
 }
