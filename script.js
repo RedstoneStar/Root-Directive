@@ -1,82 +1,145 @@
-// Make the DIV element draggable:
-dragElement(document.getElementById("welcomeWindow"));
+// Ensure DOM is fully loaded before attaching events
+import { initChadwick } from './chadwick.js';
+document.addEventListener("DOMContentLoaded", () => {
 
-// Step 1: Define a function called `dragElement` that makes an HTML element draggable.
-function dragElement(element) {
-  // Step 2: Set up variables to keep track of the element's position.
-  var initialX = 0;
-  var initialY = 0;
-  var currentX = 0;
-  var currentY = 0;
+  var biggestIndex = 1; // Initialize the biggest z-index
+  
+  // --- Clock Logic ---
+  const timeElement = document.querySelector("#timeElement");
+  
+  function updateTime() {
+    timeElement.innerHTML = new Date().toLocaleString();
+  }
+  // Set initial time and update every second
+  updateTime();
+  setInterval(updateTime, 1000);
 
-  // Step 3: Check if there is a special header element associated with the draggable element.
-  if (document.getElementById(element.id + "header")) {
-    // Step 4: If present, assign the `dragMouseDown` function to the header's `onmousedown` event.
-    // This allows you to drag the window around by its header.
-    document.getElementById(element.id + "header").onmousedown = startDragging;
+  // --- Draggable Logic ---
+  dragElement(document.getElementById("welcomeWindow"));
+  dragElement(document.getElementById("chadwickAppWindow"));
+
+  function dragElement(element) {
+    var initialX = 0, initialY = 0, currentX = 0, currentY = 0;
+
+    if (document.getElementById(element.id + "Header")) {
+      document.getElementById(element.id + "Header").onmousedown = startDragging;
+    } else {
+      element.onmousedown = startDragging;
+    }
+
+    function startDragging(e) {
+      e = e || window.event;
+      e.preventDefault();
+      initialX = e.clientX;
+      initialY = e.clientY;
+      document.onmouseup = stopDragging;
+      document.onmousemove = elementDrag; // Fixed function call matching original intent
+    }
+
+    function elementDrag(e) {
+      e = e || window.event;
+      e.preventDefault();
+      currentX = initialX - e.clientX;
+      currentY = initialY - e.clientY;
+      initialX = e.clientX;
+      initialY = e.clientY;
+      
+      element.style.top = (element.offsetTop - currentY) + "px";
+      element.style.left = (element.offsetLeft - currentX) + "px";
+    }
+
+    function stopDragging() {
+      document.onmouseup = null;
+      document.onmousemove = null;
+    }
+  }
+
+  // --- Selected Icon Logic ---
+  var selectedIcon = undefined;
+
+  function handleIconTap(element) {
+  if (element.classList.contains("selected")) {
+    deselectIcon(element)
+    openWindow(window)
   } else {
-    // Step 5: If not present, assign the function directly to the draggable element's `onmousedown` event.
-    // This allows you to drag the window by holding down anywhere on the window.
-    element.onmousedown = startDragging;
-  }
-
-  // Step 6: Define the `startDragging` function to capture the initial mouse position and set up event listeners.
-  function startDragging(e) {
-    e = e || window.event;
-    e.preventDefault();
-    // Step 7: Get the mouse cursor position at startup.
-    initialX = e.clientX;
-    initialY = e.clientY;
-    // Step 8: Set up event listeners for mouse movement (`elementDrag`) and mouse button release (`closeDragElement`).
-    document.onmouseup = stopDragging;
-    document.onmousemove = dragElement;
-  }
-
-  // Step 9: Define the `elementDrag` function to calculate the new position of the element based on mouse movement.
-  function dragElement(e) {
-    e = e || window.event;
-    e.preventDefault();
-    // Step 10: Calculate the new cursor position.
-    currentX = initialX - e.clientX;
-    currentY = initialY - e.clientY;
-    initialX = e.clientX;
-    initialY = e.clientY;
-    // Step 11: Update the element's new position by modifying its `top` and `left` CSS properties.
-    element.style.top = (element.offsetTop - currentY) + "px";
-    element.style.left = (element.offsetLeft - currentX) + "px";
-  }
-
-  // Step 12: Define the `stopDragging` function to stop tracking mouse movement by removing the event listeners.
-  function stopDragging() {
-    document.onmouseup = null;
-    document.onmousemove = null;
+    selectIcon(element)
   }
 }
 
-// Open/close windows
-var welcomeWindow = document.querySelector("#welcomeWindow");
-function closeWindow(element) {
+  // --- Window Open/Close Logic ---
 
-  element.style.display = "none";
+  function closeWindow(element) {
+    element.style.display = "none";
+  }
 
-}
-
-function openWindow(element) {
+  function openWindow(element) {
     element.style.display = "flex";
-}
+    biggestIndex++;  // Increment biggestIndex by 1
+    element.style.zIndex = biggestIndex;
+    topBar.style.zIndex = biggestIndex + 1;
+  }
 
-// Identify the close/open button 
+  // --- Welcome App Window Logic ---
+  const welcomeWindow = document.querySelector("#welcomeWindow");
+  const closeWelcomeWindow = document.querySelector("#closeWelcomeWindow");
+  const openWelcomeWindow = document.querySelector("#openWelcomeWindow");
 
-var closeWelcomeWindow = document.querySelector("#closeWelcomeWindow");
-
-var openWelcomeWindow = document.querySelector("#openWelcomeWindow");
-
-// Add event listeners to open/close buttons
-
-openWelcomeWindow.addEventListener("click", function() {
+  openWelcomeWindow.addEventListener("click", function() {
     openWindow(welcomeWindow); 
+  });
+
+  closeWelcomeWindow.addEventListener("click", function() {
+    closeWindow(welcomeWindow); 
+  });
+
+  
+  // --- Chadwick App Window Logic ---
+  const chadwickAppWindow = document.querySelector("#chadwickAppWindow");
+  const closeChadwickAppWindow = document.querySelector("#closeChadwickAppWindow");
+  const openChadwickAppWindow = document.querySelector("#openChadwickAppWindow");
+
+  openChadwickAppWindow.addEventListener("click", function(e) {
+    // Prevents the desktop click listener from instantly deselecting this icon
+    e.stopPropagation(); 
+
+    // If it's already selected, open the window and clear the selection
+    if (openChadwickAppWindow.classList.contains("selected")) {
+      openWindow(chadwickAppWindow);
+      openChadwickAppWindow.classList.remove("selected");
+    } else {
+      // If it's not selected yet, select it
+      openChadwickAppWindow.classList.add("selected");
+    }
+  });
+
+  closeChadwickAppWindow.addEventListener("click", function() {
+    closeWindow(chadwickAppWindow); 
+  });
+
+  // Click anywhere on the wallpaper/desktop to deselect the icon
+  document.addEventListener("click", function() {
+    openChadwickAppWindow.classList.remove("selected");
+  });
+
+  // -- Move the clicked window to the front by updating its z-index -- 
+  function addWindowTapHandling(element) {
+    element.addEventListener("mousedown", () =>
+      handleWindowTap(element)
+    )
+  }
+  function handleWindowTap(element) {
+    biggestIndex++;  // Increment biggestIndex by 1
+    element.style.zIndex = biggestIndex;
+    topBar.style.zIndex = biggestIndex + 1;
+  }
+
+  // Update list with every new window
+  var topBar = document.querySelector("#top")
+  addWindowTapHandling(welcomeWindow);
+  addWindowTapHandling(chadwickAppWindow);
+
+  // Initialize Chadwick AI Console
+  initChadwick();
+
 });
 
-closeWelcomeWindow.addEventListener("click", function() {
-    closeWindow(welcomeWindow); 
-});
