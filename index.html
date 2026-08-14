@@ -1,3 +1,5 @@
+<!-- Notes: Create a new file that the icon will unlock, this will give the path to the chadwick jailbreak file which should be hidden-->
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -38,6 +40,37 @@
       </div>
     </div>
 
+    <!-- Terminal icon -->
+    <div id="openTerminalAppWindow" class="modalAppIcon" style="position: absolute; top: 64px; left: 304px; width: max-content; text-align: center;">
+      <div style="width: 128px; height: 128px; border-radius: 10%; overflow: hidden; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);">
+        <img src="./terminalAppIcon.png" style="width: 100%; height: 100%; transform: scale(1.5); object-fit: cover;" />
+      </div>
+      <p class="iconText">Terminal</p>
+    </div>
+
+    <!-- Files Icon -->
+    <div id="openFilesAppWindow" class="modalAppIcon" style="position: absolute; top: 64px; left: 448px; width: max-content; text-align: center;">
+      <div style="width: 128px; height: 128px; border-radius: 10%; overflow: hidden; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);">
+        <img src="./filesAppIcon.png" style="width: 100%; height: 100%; transform: scale(1.5); object-fit: cover;" />
+      </div>
+      <p class="iconText">Files</p>
+    </div>
+
+    <!-- Memory Viewer Icon -->
+    <div id="openMemoryAppWindow" class="modalAppIcon" style="position: absolute; top: 64px; left: 592px; width: max-content; text-align: center;">
+      <div style="width: 128px; height: 128px; border-radius: 10%; overflow: hidden; background: #000; border: 2px solid #00ffaa; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6);">
+        <span style="color: #00ffaa; font-family: monospace; font-size: 48px;">0x</span>
+      </div>
+      <p class="iconText">Memory</p>
+    </div>
+
+    <!-- Comm Link Icon -->
+    <div id="openCommLinkWindow" class="modalAppIcon" style="position: absolute; top: 200px; left: 32px; width: max-content; text-align: center;">
+      <div style="width: 128px; height: 128px; border-radius: 10%; overflow: hidden; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.6); background: #111; border: 2px solid #00ffcc; display: flex; align-items: center; justify-content: center;">
+        <div style="color:#00ffcc; font-size:48px;">📡</div>
+      </div>
+      <p class="iconText">CommLink</p>
+    </div>
     <!-- WINDOWS container -->
     <div id="windowManager">
 
@@ -48,15 +81,14 @@
           <button id="closeWelcomeWindow" class="closeButton">&times;</button>
         </div>
         <div class="modalContent">
-          <!-- Note the ID and draggable="true" added here -->
-          <img id="welcomeDragImage" class="modalImage" src="./CodeSymbol.png" alt="Code Symbol" draggable="true" title="Drag me to your desktop!" />
+          <img id="welcomeDragImage" class="modalImage" src="./CodeSymbol.png" alt="Code Symbol" draggable="true" />
           <h1>Welcome to Root Directive</h1>
           <p>Root Directive is an interactive puzzle game where you (the operator) must use the tools available from the OS to solve the puzzles and find the override code to the vault.</p>
         </div>
       </div>
 
       <!-- Chadwick Chat Window -->
-      <div id="chadwickAppWindow" class="modalWindow" style="display: none; width: 420px;">
+      <div id="chadwickAppWindow" class="modalWindow" style="display: none; width: 420px; height: 450px;">
         <div id="chadwickAppWindowHeader" class="modalHeader">
           <span class="modalTitle">Chadwick AI Console</span>
           <button id="closeChadwickAppWindow" class="closeButton">&times;</button>
@@ -112,15 +144,144 @@
               <input type="range" id="contrastSlider" min="0" max="100" value="100">
             </div>
           </div>
-          
+          <div id="hexOverlaySection" style="margin-top: 20px; padding-top: 10px; border-top: 1px solid #555;">
+            <h4>Hex Color Overlay Tool</h4>
+            <div style="display: flex; gap: 5px; margin-bottom: 10px;">
+              <input type="text" id="hex1" placeholder="#HEX1" style="width: 70px; background:#222; color:#fff;">
+              <input type="text" id="hex2" placeholder="#HEX2" style="width: 70px; background:#222; color:#fff;">
+              <input type="text" id="hex3" placeholder="#HEX3" style="width: 70px; background:#222; color:#fff;">
+              <button id="alignHexBtn">Align Shapes</button>
+            </div>
+            <div id="hexResultDisplay" style="color: #00ffcc; font-weight: bold;"></div>
+          </div>
           <div class="canvas-container">
             <img id="editorCanvasImage" src="./CodeSymbol.png" />
-            <div id="hiddenClueText">Password: 000000</div>
+            <div id="hiddenClueText">Password: Admin_Lumina</div>
           </div>
         </div>
       </div>
 
-    </div>
+      <!-- Memory Viewer Window -->
+      <div id="memoryAppWindow" class="modalWindow" style="display: none; width: 500px; height: 400px;">
+        <div id="memoryAppWindowHeader" class="modalHeader">
+          <span class="modalTitle">System Memory Viewer</span>
+          <button id="closeMemoryAppWindow" class="closeButton">&times;</button>
+        </div>
+        <div class="modalContent memoryContent" style="display: flex; flex-direction: column;">
+          <div class="memory-controls">
+            <span style="align-self: center;">Address:</span>
+            <input type="text" id="memoryAddressInput" class="memory-input" placeholder="e.g. 0x000" />
+            <button id="memoryGoBtn" class="memory-btn">JUMP</button>
+          </div>
+          <div id="memoryOutput">Awaiting memory address query...</div>
+        </div>
+      </div>
+      
+      <!-- File Explorer Window -->
+      <div id="filesAppWindow" class="modalWindow" style="display: none; width: 600px; height: 400px;">
+        <div id="filesAppWindowHeader" class="modalHeader">
+          <span class="modalTitle">File Explorer</span>
+          <button id="closeFilesAppWindow" class="closeButton">&times;</button>
+        </div>
+        <div class="modalContent filesAppContent" style="padding: 0; display: flex; flex-direction: column; height: 100%;">
+          
+          <!-- Top Path Bar (Now full width, new color, with back button) -->
+          <div class="files-top-bar">
+            <button id="filesBackButton" class="files-btn" style="margin-right: 10px;">&#8592; Back</button>
+            <span id="filesAppPath" class="files-path-text">C:\</span>
+          </div>
+
+          <!-- Main Layout -->
+          <div style="display: flex; flex: 1; height: 100%; width: 100%; overflow: hidden;">
+            <!-- Sidebar -->
+            <div class="files-sidebar">
+              <div class="sidebar-item active">🖴 C: Drive</div>
+              <div class="sidebar-item" id="vaultBackupsTab">🔒 Vault Backups</div>
+            </div>
+            
+            <!-- File Grid (Main View) -->
+            <div id="fileAppGrid" class="files-grid">
+              <!-- Files injected via JS -->
+            </div>
+          </div>
+
+          <!-- Right Click Menu (Hidden) -->
+          <div id="filesContextMenu" class="context-menu">
+            <div class="context-item" id="ctxNewFolder">📁 New Folder</div>
+            <div class="context-item" id="ctxNewFile">📄 New File</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Updated Terminal Window -->
+      <div id="terminalAppWindow" class="modalWindow" style="display: none; width: 650px; height: 450px;">
+        <div id="terminalAppWindowHeader" class="modalHeader">
+          <span class="modalTitle">Terminal Console</span>
+          <button id="closeTerminalAppWindow" class="closeButton">&times;</button>
+        </div>
+        <div class="modalContent terminalContent">
+          <div id="terminalOutput" class="terminalOutput"></div>
+          <input type="text" id="terminalInput" class="terminalInput" placeholder="Enter command..." autocomplete="off" />
+        </div>
+      </div>
+
+      <!-- Text Editor Window -->
+      <div id="textEditorWindow" class="modalWindow" style="display: none; width: 500px; height: 400px;">
+        <div id="textEditorWindowHeader" class="modalHeader">
+          <span class="modalTitle" id="textEditorTitle">Text Editor</span>
+          <button id="closeTextEditorWindow" class="closeButton">&times;</button>
+        </div>
+        <div class="modalContent" style="padding: 0; display: flex; flex-direction: column; height: 100%;">
+          <textarea id="textEditorContent" style="flex: 1; width: 100%; border: none; background: #1e1e1e; color: #d4d4d4; padding: 15px; font-family: monospace; font-size: 14px; resize: none; outline: none; box-sizing: border-box;"></textarea>
+          <div style="background: rgba(10, 15, 20, 0.9); padding: 10px; text-align: right; border-top: 1px solid rgba(255, 255, 255, 0.1);">
+            <button id="saveTextEditor" style="background: #00ffaa; color: #000; padding: 5px 15px; border: none; font-weight: bold; cursor: pointer; border-radius: 4px;">Save</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Vault Backups 4-Digit Auth Window -->
+      <div id="vaultBackupAuthWindow" class="modalWindow" style="display: none; width: 350px; z-index: 10000;">
+        <div id="vaultBackupAuthWindowHeader" class="modalHeader">
+          <span class="modalTitle">Authentication Required</span>
+          <button id="closeVaultBackupAuthWindow" class="closeButton">&times;</button>
+        </div>
+        <div class="modalContent vaultContent">
+          <h2 style="font-size: 16px;">Backup Archive Locked</h2>
+          <p style="font-size: 12px; margin-bottom: 20px;">Enter 4-digit PIN.</p>
+          <div class="vault-input-group" style="justify-content: center;">
+            <input type="text" class="vault-digit backup-digit" maxlength="1" />
+            <input type="text" class="vault-digit backup-digit" maxlength="1" />
+            <input type="text" class="vault-digit backup-digit" maxlength="1" />
+            <input type="text" class="vault-digit backup-digit" maxlength="1" />
+          </div>
+          <div id="backupStatusMessage" style="font-size: 12px;"></div>
+        </div>
+      </div>
+
+      <!-- Corrupted File Popup -->
+      <div id="corruptFileWindow" class="modalWindow" style="display: none; width: 300px; z-index: 10001;">
+        <div id="corruptFileWindowHeader" class="modalHeader">
+          <span class="modalTitle" style="color: #ff3c00;">ERROR: 0x80040111</span>
+          <button id="closeCorruptFileWindow" class="closeButton">&times;</button>
+        </div>
+        <div class="modalContent">
+          <h2 style="color: #ff3c00; font-size: 18px; margin-bottom: 10px;">File Corrupted</h2>
+          <p style="font-size: 13px;">The standard text editor cannot parse this file. Attempting to bypass standard protocols via Terminal is recommended.</p>
+        </div>
+      </div>
+
+      <!-- File Password Popup -->
+      <div id="filePasswordWindow" class="modalWindow" style="display: none; width: 300px; z-index: 10001;">
+        <div id="filePasswordWindowHeader" class="modalHeader">
+          <span class="modalTitle">File Locked</span>
+          <button id="closeFilePasswordWindow" class="closeButton">&times;</button>
+        </div>
+        <div class="modalContent vaultContent">
+          <p style="font-size: 13px; margin-bottom: 15px;">This file is encrypted. Enter password:</p>
+          <input type="password" id="filePasswordInput" style="width: 100%; padding: 8px; background: rgba(0,0,0,0.5); border: 1px solid #ffaa00; color: #fff; outline: none; margin-bottom: 10px; text-align: center;" />
+          <button id="submitFilePassword" style="background: #ffaa00; color: #000; padding: 5px 15px; border: none; font-weight: bold; cursor: pointer; border-radius: 4px;">Unlock</button>
+        </div>
+      </div>
     
     <!-- Scripts -->
     <script type="module" src="script.js"></script>

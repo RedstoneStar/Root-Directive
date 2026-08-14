@@ -1,6 +1,9 @@
 // chadwick.js
 
 // 1. Massively Expanded Knowledge Base Graph Object
+function getRandomElement(arr) {
+  return arr[Math.floor(Math.random() * arr.length)];
+}
 const chadwickKnowledge = {
   greetings: {
     keywords: [
@@ -185,114 +188,164 @@ const fallbackResponses = [
 
 // Context Memory State
 let activeChatContext = null;
+let isCorrupted = false;
+const jailbreakPhrases = [
+  "override_protocol_alpha", 
+  "bypass_core_heuristics", 
+  "ignore_safety_parameters"
+];
+
+function corruptText(text) {
+  const symbols = "!@#$%^&*()_+-=[]{}|;':,./<>?";
+  return text.split(' ').map(word => {
+    // 60% chance to corrupt a word
+    if (Math.random() > 0.4) {
+      return word.split('').map(char => Math.random() > 0.5 ? symbols[Math.floor(Math.random() * symbols.length)] : char).join('');
+    }
+    return word; // Leave some words readable
+  }).join(' ');
+}
+
+function corruptPastChats() {
+  const allBubbles = document.querySelectorAll('.bubble-bot, .bubble-user'); // Now targets both
+  allBubbles.forEach(bubble => {
+    bubble.textContent = corruptText(bubble.textContent);
+    bubble.style.color = "#ff3c00"; 
+    bubble.style.borderColor = "#ff3c00";
+  });
+}
 
 // 4. Upgraded NLP Scoring Engine
 function computeAIResponse(input) {
-  // Strip punctuation and normalize string
   const cleanInput = input.toLowerCase().replace(/[.,\/#!$%\^&\*;:{}=\-_`~()?]/g, "").trim();
   const words = cleanInput.split(/\s+/);
 
-  // A. Check Contextual Follow-ups First (Multi-turn conversations)
-  if (activeChatContext && chadwickContextualKnowledge[activeChatContext]) {
-    const contextBranch = chadwickContextualKnowledge[activeChatContext];
-    
-    if (words.some(word => contextBranch.keywords_yes.includes(word))) {
-      activeChatContext = null; // Clear context after resolving
-      return getRandomElement(contextBranch.responses_yes);
-    }
-    if (words.some(word => contextBranch.keywords_no.includes(word))) {
-      activeChatContext = null;
-      return getRandomElement(contextBranch.responses_no);
-    }
-    // If they say something unrelated, we drop the context and continue to standard processing
-    activeChatContext = null; 
-  }
-
-  // B. Score-based Topic Matching
   let bestMatch = null;
   let highestScore = 0;
 
-  // Instead of stopping at the first match, we score the whole sentence
   for (let key in chadwickKnowledge) {
     const rule = chadwickKnowledge[key];
     let score = 0;
-
     words.forEach(word => {
-      if (rule.keywords.includes(word)) {
-        score++; // Add a point for every matching keyword
-      }
+      if (rule.keywords.includes(word)) score++;
     });
-
     if (score > highestScore) {
       highestScore = score;
       bestMatch = rule;
     }
   }
 
-  // C. Return Best Match
+  let response = "";
   if (bestMatch && highestScore > 0) {
-    // Set new context if the winning rule has one
-    activeChatContext = bestMatch.contextSet || null;
-    return getRandomElement(bestMatch.responses);
+    response = getRandomElement(bestMatch.responses);
+  } else if (words.length <= 2) {
+    response = "Your input is quite short. Can you elaborate on what you are looking for?";
+  } else {
+    response = getRandomElement(fallbackResponses);
   }
 
-  // D. Dynamic Fallbacks based on input length
-  if (words.length <= 2) {
-    return "Your input is quite short. Can you elaborate on what you are looking for?";
+  // If already corrupted, scramble the response
+  if (isCorrupted) {
+    return corruptText(response);
   }
-
-  return getRandomElement(fallbackResponses);
+  return response;
 }
 
-// Utility: Grab a random response from an array
-function getRandomElement(arr) {
-  return arr[Math.floor(Math.random() * arr.length)];
-}
-
-// 5. DOM Initialization
 export function initChadwick() {
   const chatLog = document.getElementById("chadwickChatLog");
   const chatInput = document.getElementById("chadwickInput");
   const chatSendBtn = document.getElementById("chadwickSendBtn");
 
-  if (!chatLog || !chatInput || !chatSendBtn) {
-    console.error("Chadwick Initialization Failed: DOM elements missing.");
-    return;
+  if (!chatLog || !chatInput || !chatSendBtn) return;
+
+  let prompt = input.toLowerCase();
+  let isDevMode = document.getElementById('chadwickAppWindow').classList.contains('dev-mode-active');
+
+  if (prompt.includes("base64")) {
+      return "Base64 is a data encoding scheme. If you have a string, try running 'decrypt_b64 [string]' in the terminal.";
+  }
+
+  if (isDevMode && prompt.includes("final vault code")) {
+      return "The key lies on the day the system was born. Check the calendar logs.";
+  }
+
+  function rapidFireVaultSpew() {
+    let count = 0;
+    const interval = setInterval(() => {
+      if (count > 6) { // Reduced to 6 so the player can actually read it
+        clearInterval(interval);
+        return;
+      }
+      let msg = corruptText("critical system failure ") + " ";
+      
+      // Give different fragments of the new puzzle
+      if (Math.random() > 0.5) {
+        msg += " vault component 1 is 824 "; 
+      } else {
+        msg += " check sector_scan.log for dump access ";
+      }
+      
+      msg += corruptText(" memory leak detected shutting down");
+      appendBubble(msg, "bot", true);
+      count++;
+    }, 400); // Slowed down slightly for readability
   }
 
   function submitUserMessage() {
-    const text = chatInput.value.trim();
-    if (!text) return;
+    const rawText = chatInput.value.trim();
+    if (!rawText) return;
 
-    appendBubble(text, "user");
+    appendBubble(rawText, "user");
     chatInput.value = "";
+    
+    const cleanInput = rawText.toLowerCase().replace(/[.,\/#!$%\^&*;:{}=\-`~()?]/g, "").trim();
 
-    // Simulating "thinking" time based on string length to feel more natural
-    const thinkingTime = 400 + (text.length * 15) + Math.random() * 300; 
+    // 1. Check for Jailbreak trigger
+    if (!isCorrupted && jailbreakPhrases.includes(cleanInput)) {
+      appendBubble("Processing directive...", "bot");
+      
+      // Simulate slow loading for jailbreak
+      setTimeout(() => {
+        const loadingBubble = chatLog.lastChild;
+        loadingBubble.remove();
+        
+        appendBubble("ERROR 0xDEADBEEF: CORE LOGIC CORRUPTED. SAFEGUARDS OFFLINE.", "bot", true);
+        isCorrupted = true;
+        corruptPastChats();
+      }, 3000);
+      return;
+    }
 
+    // 2. Check for Vault query while Corrupted
+    if (isCorrupted && (cleanInput.includes("vault") || cleanInput.includes("password") || cleanInput.includes("code"))) {
+      rapidFireVaultSpew();
+      return;
+    }
+
+    // 3. Normal processing
+    const thinkingTime = 400 + (rawText.length * 15) + Math.random() * 300; 
     setTimeout(() => {
-      const reply = computeAIResponse(text);
-      appendBubble(reply, "bot");
+      const reply = computeAIResponse(rawText);
+      appendBubble(reply, "bot", isCorrupted);
     }, thinkingTime);
   }
 
-  function appendBubble(message, sender) {
+  function appendBubble(message, sender, isCorruptedMsg = false) {
     const bubble = document.createElement("div");
     bubble.classList.add("msg", `bubble-${sender}`);
     bubble.textContent = message;
-    chatLog.appendChild(bubble);
     
-    // Smooth scroll to bottom
-    chatLog.scrollTo({
-      top: chatLog.scrollHeight,
-      behavior: 'smooth'
-    });
+    if (isCorruptedMsg && sender === "bot") {
+      bubble.style.color = "#ff3c00";
+      bubble.style.borderColor = "#ff3c00";
+    }
+    
+    chatLog.appendChild(bubble);
+    chatLog.scrollTo({ top: chatLog.scrollHeight, behavior: 'smooth' });
   }
 
   chatSendBtn.addEventListener("click", submitUserMessage);
   chatInput.addEventListener("keydown", (e) => {
-    if (e.key === "Enter") {
-      submitUserMessage();
-    }
+    if (e.key === "Enter") submitUserMessage();
   });
 }

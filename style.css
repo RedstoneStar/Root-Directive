@@ -99,6 +99,10 @@ body {
   flex-direction: column;
   overflow: hidden;
   color: #fff;
+  resize: both;
+  overflow: hidden;
+  min-width: 250px;
+  min-height: 200px;
 }
 
 /* Sleek top glowing border accent */
@@ -158,6 +162,9 @@ body {
   flex-direction: column;
   align-items: center;
   text-align: center;
+  flex: 1; 
+  width: 100%;
+  box-sizing: border-box;
 }
 
 #welcomeDragImage {
@@ -227,19 +234,69 @@ body {
 /* --- Chadwick Chat UI --- */
 .chadwickContent {
   padding: 0;
-  height: 380px;
-  justify-content: space-between;
-  align-items: stretch;
-  text-align: left;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  overflow: hidden; /* Fixes window expansion */
 }
+
+/* Chadwick Dev Mode Override */
+.dev-mode-active {
+    border-color: #00ff00 !important;
+    box-shadow: 0 0 15px rgba(0, 255, 0, 0.5) !important;
+}
+.dev-mode-active .modalTitle, .dev-mode-active .chadwick-text {
+    color: #00ff00 !important;
+}
+.dev-mode-active #chadwickChat {
+    background: rgba(0, 20, 0, 0.8) !important;
+}
+
+/* --- Memory Viewer UI --- */
+.memoryContent {
+  font-family: 'Courier New', Courier, monospace;
+  background: #000;
+  color: #00ffaa;
+  padding: 10px;
+}
+.memory-controls {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 15px;
+}
+.memory-input {
+  background: #111;
+  border: 1px solid #00ffaa;
+  color: #00ffaa;
+  padding: 5px 10px;
+  outline: none;
+}
+.memory-btn {
+  background: #00ffaa;
+  color: #000;
+  border: none;
+  padding: 5px 15px;
+  cursor: pointer;
+  font-weight: bold;
+}
+#memoryOutput {
+  height: 250px;
+  overflow-y: auto;
+  white-space: pre-wrap;
+  font-size: 13px;
+}
+
 .chatLog {
   flex: 1;
   padding: 15px;
   background: rgba(5, 10, 15, 0.4);
-  overflow-y: auto;
+  overflow-y: auto; /* Forces scrolling only on the chat area */
   display: flex;
   flex-direction: column;
   gap: 12px;
+  width: 100%;
+  box-sizing: border-box;
 }
 .msg {
   max-width: 82%;
@@ -268,6 +325,9 @@ body {
   display: flex;
   border-top: 1px solid rgba(255, 255, 255, 0.1);
   background: rgba(10, 15, 25, 0.8);
+  width: 100%;
+  flex-shrink: 0; /* Prevents input bar from being crushed */
+  box-sizing: border-box;
 }
 #chadwickInput {
   flex: 1;
@@ -346,14 +406,15 @@ body {
   left: 50%;
   transform: translate(-50%, -50%);
   color: #ff3c00;
-  font-size: 28px;
+  font-size: 20px; /* Smaller font to fit */
   font-weight: 900;
-  text-transform: uppercase;
   letter-spacing: 2px;
   text-shadow: 0 0 10px rgba(255, 0, 0, 0.8), 2px 2px 0px #000;
-  opacity: 0; /* Hidden initially */
-  pointer-events: none; /* Let clicks pass through to image if needed */
+  opacity: 0; 
+  pointer-events: none; 
   transition: opacity 0.1s;
+  width: 100%;
+  text-align: center;
 }
 
 /* --- Downloading Animation --- */
@@ -373,4 +434,162 @@ body {
 @keyframes pulse {
   0% { transform: scale(1); opacity: 0.8; }
   100% { transform: scale(1.05); opacity: 1; box-shadow: 0 0 10px #00ffaa; }
+}
+/* --- Files App UI --- */
+.files-top-bar {
+  background: #1e293b;
+  padding: 10px 15px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+.files-path-text {
+  background: rgba(0, 0, 0, 0.4);
+  padding: 6px 12px;
+  border-radius: 4px;
+  font-size: 13px;
+  color: #00ffaa;
+  flex: 1;
+  margin-left: 10px;
+}
+.files-sidebar {
+  width: 150px;
+  background: rgba(10, 15, 20, 0.8);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  padding: 10px 0;
+}
+.sidebar-item {
+  padding: 10px 15px;
+  font-size: 13px;
+  color: #ccc;
+  cursor: pointer;
+  text-align: left;
+  transition: 0.2s;
+}
+.sidebar-item:hover, .sidebar-item.active {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+}
+.files-grid {
+  flex: 1;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  padding: 15px;
+  display: flex;
+  flex-wrap: wrap;
+  align-content: flex-start;
+  gap: 15px;
+  position: relative;
+  overflow-y: auto;
+}
+.file-app-icon {
+  width: 70px;
+  text-align: center;
+  cursor: pointer;
+  padding: 5px;
+  border-radius: 6px;
+  transition: 0.1s;
+}
+.file-app-icon:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+.file-icon-symbol {
+  font-size: 32px;
+  margin-bottom: 5px;
+}
+.file-icon-name {
+  font-size: 12px;
+  color: #fff;
+  word-wrap: break-word;
+}
+.files-btn {
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  padding: 5px 10px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+.files-btn:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Right Click Context Menu */
+.context-menu {
+  display: none;
+  position: absolute;
+  background: #111827;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 6px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.8);
+  width: 150px;
+  z-index: 1000;
+  overflow: hidden;
+}
+.context-item {
+  padding: 10px 15px;
+  font-size: 13px;
+  color: #fff;
+  cursor: pointer;
+  text-align: left;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+}
+.context-item:hover {
+  background: #1f2937;
+}
+
+/* --- Terminal Specific Adjustments --- */
+.terminalContent {
+  padding: 0;
+  background-color: #020804;
+  background-image: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 255, 170, 0.05) 2px,
+    rgba(0, 255, 170, 0.05) 4px
+  );
+  animation: scanline 10s linear infinite;
+  
+  /* Force vertical flex alignment */
+  display: flex;
+  flex-direction: column;
+  height: 100%; 
+  width: 100%;
+  overflow: hidden; /* Prevents the window itself from growing scrollbars */
+}
+@keyframes scanline {
+  0% { background-position: 0 0; }
+  100% { background-position: 0 1000px; }
+}
+.terminalOutput {
+  flex: 1; 
+  width: 100%;
+  padding: 15px;
+  overflow-y: auto;
+  color: #00ffaa;
+  text-shadow: 0 0 5px rgba(0, 255, 170, 0.4);
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 14px;
+  line-height: 1.5;
+  text-align: left;
+  box-sizing: border-box;
+}
+.terminalInput {
+  background: rgba(0, 0, 0, 0.9);
+  color: #00ffaa;
+  border: none;
+  border-top: 1px solid rgba(0, 255, 170, 0.3);
+  padding: 12px 15px;
+  font-family: 'Courier New', Courier, monospace;
+  font-size: 14px;
+  outline: none;
+  width: 100%;
+  box-sizing: border-box;
+  flex-shrink: 0;
 }
